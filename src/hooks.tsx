@@ -7,7 +7,7 @@ import {
   MutableRefObject,
   useEffect,
 } from 'react'
-import { useWindowDimensions } from 'react-native'
+import { useWindowDimensions, FlatListProps } from 'react-native'
 import { ContainerRef, RefComponent } from 'react-native-collapsible-tab-view'
 import Animated, {
   cancelAnimation,
@@ -206,7 +206,13 @@ export function useScroller<T extends RefComponent>() {
 
 export const useScrollHandlerY = (
   name: TabName,
-  { enabled }: { enabled: boolean }
+  {
+    enabled,
+    onMomentumScrollEnd,
+  }: {
+    enabled: boolean
+    onMomentumScrollEnd?: FlatListProps<any>['onMomentumScrollEnd']
+  }
 ) => {
   const {
     accDiffClamp,
@@ -420,7 +426,14 @@ export const useScrollHandlerY = (
           cancelAnimation(afterDrag)
         }
       },
-      onMomentumEnd,
+      onMomentumEnd: (e) => {
+        onMomentumEnd()
+        console.log('new')
+        const syntheticEvent = { nativeEvent: e } as any
+        if (onMomentumScrollEnd) {
+          runOnJS(onMomentumScrollEnd)(syntheticEvent)
+        }
+      },
     },
     [
       refMap,

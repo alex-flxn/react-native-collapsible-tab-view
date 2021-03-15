@@ -19,6 +19,7 @@ function FlatListImpl<R>(
     style,
     onContentSizeChange,
     refreshControl,
+    onMomentumScrollEnd,
     ...rest
   }: Omit<FlatListProps<R>, 'onScroll'>,
   passRef: React.Ref<RNFlatList>
@@ -34,7 +35,10 @@ function FlatListImpl<R>(
     setCanBindScrollEvent(true)
   })
 
-  const scrollHandler = useScrollHandlerY(name, { enabled: canBindScrollEvent })
+  const scrollHandler = useScrollHandlerY(name, {
+    enabled: canBindScrollEvent,
+    onMomentumScrollEnd,
+  })
   const {
     style: _style,
     contentContainerStyle: _contentContainerStyle,
